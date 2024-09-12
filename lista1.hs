@@ -65,3 +65,57 @@ primeiros :: [Int] -> [Int]
 primeiros [] = []
 primeiros [x] = []
 primeiros (x:xs) = x : primeiros xs -- seleciona todos os elementos de uma lista não vazia, exceto o ultimo
+
+-- 9
+produtoListas :: [Int] -> [Int] -> [Int]
+produtoListas [] _ = []
+produtoListas _ [] = []
+produtoListas (x:xs) (y:ys) = (x * y) : produtoListas xs ys 
+    -- multiplica os elementos de duas listas, 
+    -- removendo um elemento de cada uma a cada chamada e concatenando o resultado
+
+-- 10
+data Produto = Perecivel Integer String Int Bool Comercializacao       -- codigo, descricao, ano de validade, comestivel
+             | NaoPerecivel Integer String String Int Comercializacao  -- codigo, descricao, fabricante, ano de fabricacao
+             deriving Show
+
+-- 11
+data Comercializacao = Unidade Int
+                     | Peso Float
+                     deriving Show
+
+-- 12
+ehValido ::  Produto -> Int -> Bool
+ehValido (Perecivel _ _ ano _ _) anoAtual = ano >= anoAtual
+ehValido (NaoPerecivel _ _ _ ano _) anoAtual = True
+
+-- 13
+myAnd :: [Bool] -> Bool
+myAnd [] = True
+myAnd(False:_) = False
+myAnd(True:xs) = myAnd xs
+
+myOr :: [Bool] -> Bool
+myOr [] = False
+myOr(True:_) = True
+myOr(False:xs) = myOr xs
+
+-- 14
+verificaLista :: [Int] -> Int
+verificaLista [] = 0 -- Caso c.
+verificaLista [x] = x -- Caso b.
+verificaLista (x:xs:_) = x + y -- Caso a.
+
+-- 15
+contador :: [Int] -> Int
+contador = foldr (\_ acc -> acc + 1) 0
+
+-- 16
+{- 
+a. Correta, resultado: ['d', 'e', 'f']
+b. Correta, resultado: 64
+c. Erro de tipo -> não retorna um mesmo tipo de dado
+d. Correta, resultado: [6, 8] * Filter não altera os dados, apenas filtra
+e. Correta, resultado: 9.0
+f. Correta, resultado: 60
+ -}
