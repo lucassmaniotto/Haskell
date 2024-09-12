@@ -104,7 +104,7 @@ myOr(False:xs) = myOr xs
 verificaLista :: [Int] -> Int
 verificaLista [] = 0 -- Caso c.
 verificaLista [x] = x -- Caso b.
-verificaLista (x:xs:_) = x + y -- Caso a.
+verificaLista (x:y:_) = x + y -- Caso a.
 
 -- 15
 contador :: [Int] -> Int
