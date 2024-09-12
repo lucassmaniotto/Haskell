@@ -45,3 +45,23 @@ potencia :: Integer -> Integer -> Integer
 potencia x n
     | n == 0    = 1
     | otherwise = x * potencia x (n - 1)
+
+-- 6
+aumentoSalarioAno :: Float -> Integer -> Integer -> Float
+aumentoSalarioAno salario anoContratacao anoAtual = aumentoSalarioAux salario anoContratacao anoAtual 0.015
+
+aumentoSalarioAux :: Float -> Integer -> Integer -> Float -> Float
+aumentoSalarioAux salario anoContratacao anoAtual percentual
+    | anoContratacao == anoAtual = salario
+    | otherwise = aumentoSalarioAux (salario + percentual * salario) (anoContratacao + 1) anoAtual (percentual * 2)
+
+-- 7
+ultimo :: [Int] -> Int
+ultimo [x] = x
+ultimo (x:xs) = ultimo xs -- desestrutura a lista e chama a função novamente, removendo o primeiro elemento
+
+-- 8 
+primeiros :: [Int] -> [Int]
+primeiros [] = []
+primeiros [x] = []
+primeiros (x:xs) = x : primeiros xs -- seleciona todos os elementos de uma lista não vazia, exceto o ultimo
