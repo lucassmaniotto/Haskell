@@ -14,6 +14,8 @@ import Lexer
   num           { TokenNum $$ }
   '+'           { TokenAdd }
   and           { TokenAnd }
+  or            { TokenOr }
+  not           { TokenNot }
   "=="          { TokenEq }
   if            { TokenIf }
   then          { TokenThen }
@@ -30,6 +32,8 @@ Exp : true                        { BTrue }
     | num                         { Num $1 }
     | Exp '+' Exp                 { Add $1 $3 }
     | Exp and Exp                 { And $1 $3 }
+    | Exp or Exp                  { Or $1 $3 }
+    | not Exp                     { Not $2 }
     | Exp "==" Exp                { Eq $1 $3 }
     | if Exp then Exp else Exp    { If $2 $4 $6 }
 

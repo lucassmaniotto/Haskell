@@ -7,6 +7,8 @@ data Expr = BTrue
           | Num Int 
           | Add Expr Expr 
           | And Expr Expr 
+          | Or Expr Expr
+          | Not Expr
           | Eq Expr Expr
           | If Expr Expr Expr 
           | Var String 
@@ -24,6 +26,8 @@ data Token = TokenTrue
            | TokenNum Int 
            | TokenAdd 
            | TokenAnd 
+           | TokenOr
+           | TokenNot
            | TokenEq
            | TokenIf
            | TokenThen
@@ -53,6 +57,8 @@ lexerKW cs = case span isAlpha cs of
                ("true", rest) -> TokenTrue : lexer rest 
                ("false", rest) -> TokenFalse : lexer rest 
                ("and", rest) -> TokenAnd : lexer rest 
+               ("or", rest) -> TokenOr : lexer rest
+               ("not", rest) -> TokenNot : lexer rest
                ("if", rest) -> TokenIf : lexer rest 
                ("then", rest) -> TokenThen : lexer rest 
                ("else", rest) -> TokenElse : lexer rest 

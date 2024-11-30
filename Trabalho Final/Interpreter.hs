@@ -16,6 +16,8 @@ subst x n b@(Var v) = if v == x then
                         b 
 subst x n (Add e1 e2) = (Add (subst x n e1) (subst x n e2))
 subst x n (And e1 e2) = (And (subst x n e1) (subst x n e2))
+subst x n (Or e1 e2) = (Or (subst x n e1) (subst x n e2))
+subst x n (Not e) = (Not (subst x n e))
 subst x n (Eq e1 e2) = (Eq (subst x n e1) (subst x n e2))
 subst x n (If e e1 e2) = (If (subst x n e) (subst x n e1) (subst x n e2))
 subst x n (Lam v t b) = (Lam v t (subst x n b))
@@ -30,6 +32,12 @@ step (Add e1 e2) = Add (step e1) e2
 step (And BFalse e) = BFalse 
 step (And BTrue e) = e 
 step (And e1 e2) = And (step e1) e2 
+step (Or BTrue e) = BTrue
+step (Or BFalse e) = e
+step (Or e1 e2) = Or (step e1) e2
+step (Not BTrue) = BFalse
+step (Not BFalse) = BTrue
+step (Not e) = Not (step e)
 step (Eq e1 e2) | isValue e1 && isValue e2 = if (e1 == e2) then 
                                                BTrue 
                                              else 
