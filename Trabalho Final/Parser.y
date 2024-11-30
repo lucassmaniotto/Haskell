@@ -13,6 +13,8 @@ import Lexer
   false         { TokenFalse }
   num           { TokenNum $$ }
   '+'           { TokenAdd }
+  '-'           { TokenSub }
+  '*'           { TokenMul }
   and           { TokenAnd }
   or            { TokenOr }
   not           { TokenNot }
@@ -24,6 +26,9 @@ import Lexer
 %nonassoc if then else 
 %left "=="
 %left '+' and
+%left '-' or
+%left '*'
+%left not
 
 %% 
 
@@ -31,6 +36,8 @@ Exp : true                        { BTrue }
     | false                       { BFalse }
     | num                         { Num $1 }
     | Exp '+' Exp                 { Add $1 $3 }
+    | Exp '-' Exp                 { Sub $1 $3 }
+    | Exp '*' Exp                 { Mul $1 $3 }
     | Exp and Exp                 { And $1 $3 }
     | Exp or Exp                  { Or $1 $3 }
     | not Exp                     { Not $2 }

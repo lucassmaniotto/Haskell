@@ -15,6 +15,8 @@ subst x n b@(Var v) = if v == x then
                       else 
                         b 
 subst x n (Add e1 e2) = (Add (subst x n e1) (subst x n e2))
+subst x n (Sub e1 e2) = (Sub (subst x n e1) (subst x n e2))
+subst x n (Mul e1 e2) = (Mul (subst x n e1) (subst x n e2))
 subst x n (And e1 e2) = (And (subst x n e1) (subst x n e2))
 subst x n (Or e1 e2) = (Or (subst x n e1) (subst x n e2))
 subst x n (Not e) = (Not (subst x n e))
@@ -29,6 +31,14 @@ step (Add (Num n1) (Num n2)) = Num (n1 + n2)
 step (Add (Num nv) e2) = let e2' = step e2 
                            in Add (Num nv) e2' 
 step (Add e1 e2) = Add (step e1) e2 
+step (Sub (Num n1) (Num n2)) = Num (n1 - n2)
+step (Sub (Num nv) e2) = let e2' = step e2 
+                           in Sub (Num nv) e2'
+step (Sub e1 e2) = Sub (step e1) e2
+step (Mul (Num n1) (Num n2)) = Num (n1 * n2)
+step (Mul (Num nv) e2) = let e2' = step e2 
+                           in Mul (Num nv) e2'
+step (Mul e1 e2) = Mul (step e1) e2
 step (And BFalse e) = BFalse 
 step (And BTrue e) = e 
 step (And e1 e2) = And (step e1) e2 
