@@ -22,13 +22,18 @@ import Lexer
   if            { TokenIf }
   then          { TokenThen }
   else          { TokenElse }
+  '\\'          { TokenLam }
+  ':'           { TokenColon }
+  '('           { TokenOpenParen }
+  ')'           { TokenCloseParen }
+  "Bool"        { TokenBool }
+  "Num"         { TokenNumType }
+  "->"          { TokenArrow }
+  var           { TokenVar $$ }
 
-%nonassoc if then else 
-%left "=="
-%left '+' and
-%left '-' or
-%left '*'
-%left not
+%nonassoc if then else var num true false "Bool" "Num" "->" "==" 
+%left "==" '+' '-' '*' or and
+%right not
 
 %% 
 
@@ -43,6 +48,14 @@ Exp : true                        { BTrue }
     | not Exp                     { Not $2 }
     | Exp "==" Exp                { Eq $1 $3 }
     | if Exp then Exp else Exp    { If $2 $4 $6 }
+    | '\\' var ':' Ty "->" Exp    { Lam $2 $4 $6 }
+    | Exp Exp                     { App $1 $2 }
+    | var                         { Var $1 }
+    | '(' Exp ')'                 { $2 }
+
+Ty  : "Bool"                      { TBool }
+    | "Num"                       { TNum }
+    | Ty "->" Ty                  { TFun $1 $3 }
 
 {
 parseError :: [Token] -> a 

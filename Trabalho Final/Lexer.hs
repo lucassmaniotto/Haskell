@@ -39,16 +39,24 @@ data Token = TokenTrue
            | TokenVar String
            | TokenLam 
            | TokenArrow 
+           | TokenColon
+           | TokenOpenParen
+           | TokenCloseParen
+           | TokenBool
+           | TokenNumType
            deriving Show
 
 lexer :: String -> [Token]
 lexer [] = [] 
 lexer ('+':cs) = TokenAdd : lexer cs 
+lexer ('-':'>':cs) = TokenArrow : lexer cs 
 lexer ('-':cs) = TokenSub : lexer cs
 lexer ('*':cs) = TokenMul : lexer cs
 lexer ('\\':cs) = TokenLam : lexer cs 
+lexer (':':cs) = TokenColon : lexer cs
+lexer ('(':cs) = TokenOpenParen : lexer cs
+lexer (')':cs) = TokenCloseParen : lexer cs
 lexer ('=':'=':cs) = TokenEq : lexer cs 
-lexer ('-':'>':cs) = TokenArrow : lexer cs 
 lexer (c:cs) 
    | isSpace c = lexer cs 
    | isAlpha c = lexerKW (c:cs) 
@@ -68,5 +76,7 @@ lexerKW cs = case span isAlpha cs of
                ("if", rest) -> TokenIf : lexer rest 
                ("then", rest) -> TokenThen : lexer rest 
                ("else", rest) -> TokenElse : lexer rest 
+               ("Bool", rest) -> TokenBool : lexer rest 
+               ("Num", rest) -> TokenNumType : lexer rest
                (var, rest) -> TokenVar var : lexer rest
 
