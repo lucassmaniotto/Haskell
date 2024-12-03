@@ -24,6 +24,10 @@ subst x n (Eq e1 e2) = (Eq (subst x n e1) (subst x n e2))
 subst x n (If e e1 e2) = (If (subst x n e) (subst x n e1) (subst x n e2))
 subst x n (Lam v t b) = (Lam v t (subst x n b))
 subst x n (App e1 e2) = (App (subst x n e1) (subst x n e2))
+subst x n (Paren e) = (Paren (subst x n e))
+subst x n (List es) = (List (map (subst x n) es))
+subst x n (Head e) = (Head (subst x n e))
+subst x n (Tail e) = (Tail (subst x n e))
 subst _ _ e = e
 
 step :: Expr -> Expr 
@@ -60,7 +64,14 @@ step (If e e1 e2) = If (step e) e1 e2
 step (App (Lam v t b) e) | isValue e = subst v e b 
                        | otherwise = (App (Lam v t b) (step e))
 step (App e1 e2) = App (step e1) e2 
+step (Paren e) = e
+step (Head (List (e:es))) = e
+step (Head e) = Head (step e)
+step (Tail (List (e:es))) = List es
+step (Tail e) = Tail (step e)
+step e = error (show e)
 
 eval :: Expr -> Expr 
+eval (List es) = List (map eval es)
 eval e | isValue e = e 
        | otherwise = eval (step e)

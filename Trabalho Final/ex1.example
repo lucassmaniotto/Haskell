@@ -1,0 +1,1 @@
+(\x : Num -> if ((x == 2) or ((x - 1) == 1)) then x + 3 else x - 1 ) 2

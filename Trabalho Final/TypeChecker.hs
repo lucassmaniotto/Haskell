@@ -43,8 +43,26 @@ typeof ctx (App e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                         (Just (TFun t11 t12), Just t2) | t11 == t2 -> Just t12
                                                        | otherwise -> Nothing
                         _ -> Nothing
+typeof ctx (List e) = case checkListElements ctx e of
+                          Just elementType -> Just (TList elementType)
+                          _                -> Nothing
+typeof ctx (Head e) = case typeof ctx e of
+                      Just (TList t) -> Just t
+                      _              -> Nothing
+
+typeof ctx (Tail e) = case typeof ctx e of
+                      Just (TList t) -> Just (TList t)
+                      _              -> Nothing
+typeof ctx (Paren e) = typeof ctx e
 
 typecheck :: Expr -> Expr 
 typecheck e = case typeof [] e of 
                 (Just _) -> e 
                 _        -> error ("Erro verificando tipo da expressão: " ++ show e)
+
+checkListElements :: Ctx -> [Expr] -> Maybe Ty
+checkListElements ctx (e:es) = case typeof ctx e of
+                              Just t -> if all ((== Just t) . typeof ctx) es
+                                        then Just t
+                                        else Nothing
+                              _      -> Nothing

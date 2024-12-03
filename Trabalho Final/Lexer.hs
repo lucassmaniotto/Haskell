@@ -16,11 +16,16 @@ data Expr = BTrue
           | Var String 
           | Lam String Ty Expr 
           | App Expr Expr
+          | Paren Expr
+          | List [Expr]
+          | Head Expr
+          | Tail Expr
           deriving (Show, Eq)
 
 data Ty = TBool 
         | TNum 
         | TFun Ty Ty
+        | TList Ty
         deriving (Show, Eq)
 
 data Token = TokenTrue
@@ -44,6 +49,12 @@ data Token = TokenTrue
            | TokenCloseParen
            | TokenBool
            | TokenNumType
+           | TokenList
+           | TokenHead
+           | TokenTail
+           | TokenComma
+           | TokenOpenBracket
+           | TokenCloseBracket
            deriving Show
 
 lexer :: String -> [Token]
@@ -57,6 +68,9 @@ lexer (':':cs) = TokenColon : lexer cs
 lexer ('(':cs) = TokenOpenParen : lexer cs
 lexer (')':cs) = TokenCloseParen : lexer cs
 lexer ('=':'=':cs) = TokenEq : lexer cs 
+lexer (',':cs) = TokenComma : lexer cs
+lexer ('[':cs) = TokenOpenBracket : lexer cs
+lexer (']':cs) = TokenCloseBracket : lexer cs
 lexer (c:cs) 
    | isSpace c = lexer cs 
    | isAlpha c = lexerKW (c:cs) 
@@ -78,5 +92,8 @@ lexerKW cs = case span isAlpha cs of
                ("else", rest) -> TokenElse : lexer rest 
                ("Bool", rest) -> TokenBool : lexer rest 
                ("Num", rest) -> TokenNumType : lexer rest
+               ("List", rest) -> TokenList : lexer rest
+               ("head", rest) -> TokenHead : lexer rest
+               ("tail", rest) -> TokenTail : lexer rest
                (var, rest) -> TokenVar var : lexer rest
 
