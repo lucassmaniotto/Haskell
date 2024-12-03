@@ -20,12 +20,15 @@ data Expr = BTrue
           | List [Expr]
           | Head Expr
           | Tail Expr
+          | Nil
+          | IsNil Expr
           deriving (Show, Eq)
 
 data Ty = TBool 
         | TNum 
         | TFun Ty Ty
         | TList Ty
+        | TNil
         deriving (Show, Eq)
 
 data Token = TokenTrue
@@ -55,6 +58,8 @@ data Token = TokenTrue
            | TokenComma
            | TokenOpenBracket
            | TokenCloseBracket
+           | TokenNil
+           | TokenIsNil
            deriving Show
 
 lexer :: String -> [Token]
@@ -95,5 +100,7 @@ lexerKW cs = case span isAlpha cs of
                ("List", rest) -> TokenList : lexer rest
                ("head", rest) -> TokenHead : lexer rest
                ("tail", rest) -> TokenTail : lexer rest
+               ("null", rest) -> TokenNil : lexer rest
+               ("isNull", rest) -> TokenIsNil : lexer rest
                (var, rest) -> TokenVar var : lexer rest
 

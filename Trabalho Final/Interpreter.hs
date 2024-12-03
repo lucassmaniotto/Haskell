@@ -69,6 +69,11 @@ step (Head (List (e:es))) = e
 step (Head e) = Head (step e)
 step (Tail (List (e:es))) = List es
 step (Tail e) = Tail (step e)
+step (IsNil Nil) = BTrue
+step (IsNil (List [])) = BTrue
+step (IsNil (List _)) = BFalse
+step (IsNil e) = IsNil (step e)
+step Nil = Nil
 step e = error (show e)
 
 eval :: Expr -> Expr 

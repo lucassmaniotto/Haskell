@@ -8,6 +8,7 @@ typeof :: Ctx -> Expr -> Maybe Ty
 typeof _ (Num _) = Just TNum 
 typeof _ BTrue = Just TBool
 typeof _ BFalse = Just TBool
+typeof _ Nil = Just (TList TNil)
 typeof ctx (Add e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum
                        _ -> Nothing 
@@ -45,24 +46,27 @@ typeof ctx (App e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                         _ -> Nothing
 typeof ctx (List e) = case checkListElements ctx e of
                           Just elementType -> Just (TList elementType)
-                          _                -> Nothing
+                          _ -> Nothing
 typeof ctx (Head e) = case typeof ctx e of
                       Just (TList t) -> Just t
-                      _              -> Nothing
+                      _ -> Nothing
 
 typeof ctx (Tail e) = case typeof ctx e of
                       Just (TList t) -> Just (TList t)
-                      _              -> Nothing
+                      _ -> Nothing
 typeof ctx (Paren e) = typeof ctx e
+typeof ctx (IsNil e) = case typeof ctx e of
+                          Just (TList _) -> Just TBool
+                          _ -> Nothing
 
 typecheck :: Expr -> Expr 
 typecheck e = case typeof [] e of 
                 (Just _) -> e 
-                _        -> error ("Erro verificando tipo da expressão: " ++ show e)
+                _ -> error ("Erro verificando tipo da expressão: " ++ show e)
 
 checkListElements :: Ctx -> [Expr] -> Maybe Ty
 checkListElements ctx (e:es) = case typeof ctx e of
                               Just t -> if all ((== Just t) . typeof ctx) es
                                         then Just t
                                         else Nothing
-                              _      -> Nothing
+                              _ -> Nothing

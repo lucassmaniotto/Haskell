@@ -35,9 +35,11 @@ import Lexer
   List          { TokenList }
   head          { TokenHead }
   tail          { TokenTail }
+  null           { TokenNil }
+  isNull         { TokenIsNil }
   var           { TokenVar $$ }
 
-%nonassoc if then else var num true false Bool Num "->" '==' head tail List ',' '(' ')' '[' ']' '\\' ':'
+%nonassoc if then else var num true false Bool Num "->" '==' head tail List ',' '(' ')' '[' ']' '\\' ':' null isNull
 %left '==' '+' '-' '*' or and
 %right not
 
@@ -61,6 +63,8 @@ Exp : true                        { BTrue }
     | '[' ExpList ']'             { List $2 }
     | head Exp                    { Head $2 }
     | tail Exp                    { Tail $2 }
+    | null                         { Nil }
+    | isNull Exp                   { IsNil $2 }
 
 ExpList : Exp                     { [$1] }
         | Exp ',' ExpList         { $1 : $3 }
