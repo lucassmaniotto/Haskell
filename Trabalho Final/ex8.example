@@ -1,1 +1,1 @@
-isNull (tail [1])
+isNull ([1,2])
