@@ -21,6 +21,7 @@ subst x n (And e1 e2) = (And (subst x n e1) (subst x n e2))
 subst x n (Or e1 e2) = (Or (subst x n e1) (subst x n e2))
 subst x n (Not e) = (Not (subst x n e))
 subst x n (Eq e1 e2) = (Eq (subst x n e1) (subst x n e2))
+subst x n (GThen e1 e2) = (GThen (subst x n e1) (subst x n e2))
 subst x n (If e e1 e2) = (If (subst x n e) (subst x n e1) (subst x n e2))
 subst x n (Lam v t b) = (Lam v t (subst x n b))
 subst x n (App e1 e2) = (App (subst x n e1) (subst x n e2))
@@ -58,6 +59,12 @@ step (Eq e1 e2) | isValue e1 && isValue e2 = if (e1 == e2) then
                                                BFalse
                 | isValue e1 = Eq e1 (step e2)
                 | otherwise = Eq (step e1) e2
+step (GThen (Num n1) (Num n2)) = if n1 >= n2 then 
+                                    BTrue 
+                                  else 
+                                    BFalse
+step (GThen (Num nv) e2) = GThen (Num nv) (step e2)
+step (GThen e1 e2) = GThen (step e1) e2
 step (If BTrue e1 e2) = e1 
 step (If BFalse e1 e2) = e2 
 step (If e e1 e2) = If (step e) e1 e2 
